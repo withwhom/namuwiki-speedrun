@@ -11,6 +11,9 @@
 // [T5] 영문 대소문자만 다른 두 제목은 같은 문서로 본다 (예: K-POP / K-pop).
 // [T6] 문서 주소를 만들 때는 제목 전체를 encodeURIComponent로 인코딩한다 ('/' 포함).
 // [T7] namu.wiki 루트(/)는 대문으로 넘어가는 중간 단계로 보고 무시한다.
+// [T8] 목표 도착 판정에서는 띄어쓰기만 다른 제목을 같은 문서로 본다 (예: 레오나르도 다 빈치 / 레오나르도 다빈치).
+//      띄어쓰기가 중요한 문제는 challenges.json에 "exactSpacing": true를 달아 끈다.
+//      어느 문서로 이동했는지(클릭 수) 판정에는 띄어쓰기를 그대로 쓴다.
 
 export const NAMU_HOST = 'namu.wiki';
 export const DOC_PREFIX = '/w/';
@@ -45,8 +48,9 @@ export function titleKey(title) {
   return normalizeTitle(title).toLowerCase(); // [T5]
 }
 
-export function sameTitle(a, b) {
+export function sameTitle(a, b, { ignoreSpaces = false } = {}) {
   if (!a || !b) return false;
+  if (ignoreSpaces) return titleKey(a).replace(/ /g, '') === titleKey(b).replace(/ /g, ''); // [T8]
   return titleKey(a) === titleKey(b);
 }
 

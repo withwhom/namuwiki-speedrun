@@ -21,6 +21,7 @@ export function createGame(setup, tabId, now) {
     start: setup.start,
     target: setup.target,
     aliases: setup.aliases ?? [],
+    exactSpacing: setup.exactSpacing ?? false,
     tabId,
     status: 'pending', // pending → running → finished | abandoned
     createdAt: now,
@@ -35,7 +36,8 @@ export function createGame(setup, tabId, now) {
 
 export function isTarget(game, title) {
   if (!title) return false;
-  return [game.target, ...game.aliases].some((t) => sameTitle(t, title));
+  const ignoreSpaces = !game.exactSpacing;
+  return [game.target, ...game.aliases].some((t) => sameTitle(t, title, { ignoreSpaces }));
 }
 
 function reachedTarget(game, parsed) {

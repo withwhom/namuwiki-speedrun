@@ -80,6 +80,7 @@ test('challenges.json: 50개 이상, id 고유, 필수 항목', () => {
     assert.ok(!sameTitle(c.start, c.target), `${c.id}: 시작과 목표가 같음`);
     assert.equal(namespaceOf(c.start), null);
     assert.equal(namespaceOf(c.target), null);
+    if ('exactSpacing' in c) assert.equal(typeof c.exactSpacing, 'boolean', `${c.id}: exactSpacing`);
   }
 });
 

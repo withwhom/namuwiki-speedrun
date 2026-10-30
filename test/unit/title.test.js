@@ -56,6 +56,13 @@ test('영문 대소문자만 다르면 같은 제목', () => {
   assert.ok(!sameTitle('', ''));
 });
 
+test('ignoreSpaces면 띄어쓰기만 다른 제목도 같다', () => {
+  assert.ok(!sameTitle('레오나르도 다 빈치', '레오나르도 다빈치'));
+  assert.ok(sameTitle('레오나르도 다 빈치', '레오나르도 다빈치', { ignoreSpaces: true }));
+  assert.ok(sameTitle('K-POP', 'k- pop', { ignoreSpaces: true }));
+  assert.ok(!sameTitle('달', '해', { ignoreSpaces: true }));
+});
+
 test('문서가 아닌 나무위키 페이지는 special', () => {
   assert.deepEqual(parseNamuUrl(`https://namu.wiki/edit/${encodeURIComponent('달')}`), {
     kind: 'special',

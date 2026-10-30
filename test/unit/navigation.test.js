@@ -77,6 +77,24 @@ test('별칭이나 대소문자가 다른 제목으로도 도착 인정', () => 
   assert.equal(play(g, [link('짜장면'), link('nasa')]).game.status, 'finished');
 });
 
+test('목표 도착은 띄어쓰기를 무시한다', () => {
+  const g = newGame({ target: '레오나르도 다 빈치' });
+  assert.equal(play(g, [link('짜장면'), link('레오나르도 다빈치')]).game.status, 'finished');
+});
+
+test('exactSpacing이면 띄어쓰기가 달라도 도착이 아니다', () => {
+  const g = newGame({ target: '레오나르도 다 빈치', exactSpacing: true });
+  const { game } = play(g, [link('짜장면'), link('레오나르도 다빈치')]);
+  assert.equal(game.status, 'running');
+  assert.equal(play(game, [link('레오나르도 다 빈치')], 9000).game.status, 'finished');
+});
+
+test('이동 판정은 띄어쓰기를 구분한다: 띄어쓰기만 다른 문서로 가도 1클릭', () => {
+  const g = newGame({ target: '달' });
+  const { game } = play(g, [link('짜장면'), link('짜장 면')]);
+  assert.equal(game.clicks, 1);
+});
+
 test('리다이렉트: /w/원래제목 → /w/대상?from=원래제목 은 이동 한 번', () => {
   const { game } = play(newGame(), [link('짜장면'), link('뉴턴'), push('아이작 뉴턴', '?from=' + encodeURIComponent('뉴턴'))]);
   assert.equal(game.clicks, 1);

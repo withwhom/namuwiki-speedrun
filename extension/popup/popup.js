@@ -40,6 +40,7 @@ function challengeSetup(mode, challenge, dailyNo = null) {
     start: challenge.start,
     target: challenge.target,
     aliases: challenge.aliases ?? [],
+    exactSpacing: challenge.exactSpacing ?? false,
   };
 }
 
