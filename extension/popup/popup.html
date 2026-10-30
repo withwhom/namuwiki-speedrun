@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>나무위키 스피드런</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>나무위키 스피드런</h1>
+    <p class="hint">본문 링크만 눌러 목표 문서까지 가세요.</p>
+  </header>
+
+  <section id="current" hidden>
+    <h2>진행 중</h2>
+    <p class="route" id="current-route"></p>
+    <p class="meta" id="current-meta"></p>
+    <div class="row">
+      <button id="resume" class="btn">게임 탭 다시 열기</button>
+      <button id="abandon" class="btn">포기</button>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="daily-title">오늘의 문제</h2>
+    <p class="route" id="daily-route"></p>
+    <p class="meta" id="daily-best"></p>
+    <button id="daily-start" class="btn primary">시작</button>
+  </section>
+
+  <section>
+    <h2>랜덤 도전</h2>
+    <p class="route" id="random-route"></p>
+    <div class="row">
+      <button id="random-reroll" class="btn">다른 문제</button>
+      <button id="random-start" class="btn primary">시작</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>직접 입력</h2>
+    <form id="custom-form">
+      <label>시작 문서 <input id="custom-start" required autocomplete="off" placeholder="예: 짜장면"></label>
+      <label>목표 문서 <input id="custom-target" required autocomplete="off" placeholder="예: 아이작 뉴턴"></label>
+      <p class="error" id="custom-error" role="alert"></p>
+      <button type="submit" class="btn primary">시작</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>최근 기록</h2>
+    <ul class="records" id="recent"></ul>
+  </section>
+
+  <section>
+    <h2>문제별 최고 기록</h2>
+    <ul class="records" id="best"></ul>
+  </section>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

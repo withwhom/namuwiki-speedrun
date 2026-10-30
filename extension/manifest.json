@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "나무위키 스피드런",
+  "version": "0.1.0",
+  "description": "나무위키 본문 링크만 눌러 목표 문서까지 가는 게임. 타이머·클릭 수·경로를 페이지 위에 보여줍니다.",
+  "permissions": ["storage", "webNavigation"],
+  "host_permissions": ["https://namu.wiki/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "나무위키 스피드런",
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://namu.wiki/*"],
+      "js": ["content/loader.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["content/hud.js", "content/selectors.js", "lib/*.js"],
+      "matches": ["https://namu.wiki/*"]
+    }
+  ]
+}
