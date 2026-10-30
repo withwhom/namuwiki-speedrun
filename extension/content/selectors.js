@@ -5,6 +5,7 @@
 // 확인 필요한 가정:
 // [S1] 검색창은 placeholder에 '검색'이 들어간 input이거나, /Search 또는 /go 로 보내는 form 안에 있다.
 //      선택자가 맞아 검색창을 쓸 수 없게 되는 것은 확인됨 2026-10-30. 다만 감싸는 상자가 남아 검은 칸으로 보인다.
+//      검은 칸은 그대로 두기로 했다 (게임에 지장 없음).
 // [S2] 나무위키 다크 모드는 <html> 또는 <body>에 'dark'가 들어간 클래스가 붙는다.
 
 export const HUD_HOST_ID = 'namu-speedrun-hud';
