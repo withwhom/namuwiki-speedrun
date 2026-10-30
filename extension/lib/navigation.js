@@ -3,10 +3,10 @@
 // 이동 하나(nav)는 webNavigation 이벤트를 정리한 값이다:
 //   { url, transitionType, transitionQualifiers, source: 'commit' | 'history' | 'fragment' }
 //
-// 확인 필요한 가정:
+// 가정 목록. 맥북에서 실제로 확인한 것은 '확인됨'으로 표시한다:
 // [N1] 리다이렉트 문서로 가는 링크를 누르면 주소가 /w/원래제목 → /w/대상제목?from=원래제목 순서로 바뀔 수 있다.
 //      두 번째 주소의 from이 바로 앞 경로 항목과 같으면 새 이동이 아니라 앞 항목을 고친다.
-// [N2] 뒤로/앞으로 가기는 transitionQualifiers에 'forward_back'이 붙는다. 방향은 알 수 없어서 한 종류로 표시한다.
+// [N2] 뒤로/앞으로 가기는 transitionQualifiers에 'forward_back'이 붙는다. 방향은 알 수 없어서 한 종류로 표시한다. (확인됨 2026-10-30)
 // [N3] 문서가 아닌 페이지(편집, 검색 등)는 /w/ 문서가 아니므로 클릭 수에 넣지 않고 경로에만 남긴다.
 
 import { parseNamuUrl, sameTitle } from './title.js';

@@ -1,11 +1,12 @@
 // 규칙 위반 판정. URL을 parseNamuUrl로 정리한 결과와 webNavigation 정보만 본다.
 //
-// 확인 필요한 가정:
-// [R1] 이름공간 문서는 /w/<이름공간>:<제목> 형태다 (예: /w/분류:한국의 음식).
+// 가정 목록. 맥북에서 실제로 확인한 것은 '확인됨'으로 표시한다:
+// [R1] 이름공간 문서는 /w/<이름공간>:<제목> 형태다 (예: /w/분류:한국의 음식). (확인됨 2026-10-30)
 // [R2] 편집·역링크·역사·토론·검색 등은 /w/가 아닌 경로로 열린다.
 //      알려진 경로: /edit/ /backlink/ /history/ /discuss/ /thread/ /Search /go/ /raw/ /diff/ /blame/ /random
 //      목록에 없는 경로도 '문서가 아닌 페이지'로 보고 위반 처리한다.
-// [R3] 주소창 직접 입력은 webNavigation transitionType 'typed'(또는 주소창 추천 선택 'generated' 등)로 들어온다.
+//      편집·역사 경로는 확인됨 2026-10-30. 나머지는 미확인.
+// [R3] 주소창 직접 입력은 webNavigation transitionType 'typed'(또는 주소창 추천 선택 'generated' 등)로 들어온다. (typed (확인됨 2026-10-30))
 //      history 기반 이동(onHistoryStateUpdated)은 페이지 안의 링크로만 일어난다고 보고 typed 판정을 하지 않는다.
 
 import { normalizeTitle } from './title.js';
