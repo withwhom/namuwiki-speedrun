@@ -46,6 +46,8 @@ async function storage(keys) {
 async function startCustomGame(start, target) {
   const popup = await context.newPage();
   await popup.goto(`chrome-extension://${extensionId}/popup/popup.html`);
+  assert.equal(await popup.locator('#custom-start').isVisible(), false); // 직접 입력은 접혀 있다
+  await popup.click('#custom summary');
   await popup.fill('#custom-start', start);
   await popup.fill('#custom-target', target);
   const [game] = await Promise.all([context.waitForEvent('page'), popup.click('#custom-form button[type=submit]')]);
