@@ -21,6 +21,9 @@ p { margin: 0 0 6px; }
 .hint, .meta { color: var(--muted); }
 section { border-top: 1px solid var(--line); padding: 10px 0; }
 header { padding-bottom: 8px; }
+details { border-top: 1px solid var(--line); padding: 10px 0; }
+summary { font-size: 13px; color: var(--muted); font-weight: 600; cursor: pointer; user-select: none; }
+details[open] summary { margin-bottom: 6px; }
 .route { font-weight: 600; font-size: 14px; }
 .row { display: flex; gap: 6px; }
 .btn {

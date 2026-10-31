@@ -5,6 +5,9 @@
 import { HUD_HOST_ID, isSiteDarkMode, setSearchHidden } from './selectors.js';
 import { buildShareText, formatDuration } from '../lib/score.js';
 import { elapsedMs } from '../lib/navigation.js';
+import { isFindShortcut } from '../lib/shortcuts.js';
+
+const IS_MAC = /mac/i.test(navigator.userAgentData?.platform ?? navigator.platform ?? '');
 
 const STYLE = `
 :host { all: initial; }
@@ -106,6 +109,7 @@ class Hud {
   constructor(tabId) {
     this.tabId = tabId;
     this.game = null;
+    this.active = false;
     this.prefs = { x: null, y: 16, collapsed: false };
     this.shownViolations = 0;
     this.warnTimer = null;
@@ -113,6 +117,16 @@ class Hud {
     this.root = this.host.attachShadow({ mode: 'open' });
     this.build();
     setInterval(() => this.tick(), 250);
+    // 나무위키 스크립트보다 먼저 받도록 window의 캡처 단계에서 듣는다
+    window.addEventListener('keydown', (e) => this.blockFind(e), true);
+  }
+
+  // 게임 중에는 브라우저 찾기 단축키를 막는다 (메뉴로 여는 찾기는 막을 수 없다)
+  blockFind(e) {
+    if (!this.active || !isFindShortcut(e, { mac: IS_MAC })) return;
+    e.preventDefault();
+    e.stopPropagation();
+    this.showWarning(`게임 중에는 찾기(${IS_MAC ? '⌘F' : 'Ctrl+F'})를 쓸 수 없어요.`);
   }
 
   build() {
@@ -202,8 +216,8 @@ class Hud {
   update(game) {
     const prev = this.game;
     this.game = this.isMine(game) ? game : null;
-    const active = this.game && (this.game.status === 'pending' || this.game.status === 'running');
-    setSearchHidden(!!active);
+    this.active = !!this.game && (this.game.status === 'pending' || this.game.status === 'running');
+    setSearchHidden(this.active);
 
     if (!this.game) {
       this.host.remove();

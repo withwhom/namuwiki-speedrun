@@ -134,7 +134,10 @@ async function main() {
     if (pick) startGame({ mode: 'random', start: pick.start.title, target: pick.target.title }, game);
   });
 
-  // 직접 입력
+  // 직접 입력: 잘 쓰지 않아 접어 두고, 펼치면 시작 문서 칸으로 간다
+  $('custom').addEventListener('toggle', () => {
+    if ($('custom').open) $('custom-start').focus();
+  });
   $('custom-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const start = normalizeTitle($('custom-start').value);

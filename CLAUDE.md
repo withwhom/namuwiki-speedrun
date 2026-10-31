@@ -15,12 +15,13 @@ extension/                 크롬에 "압축해제된 확장 프로그램"으로
     navigation.js          게임 상태 전이 (시작, 이동, 리다이렉트 보정, 도착, 포기)
     score.js               기록, 최고 기록, 공유 문구, 시간 형식
     daily.js               오늘의 문제 선택 (KST 기준)
+    shortcuts.js           게임 중 막을 브라우저 찾기 단축키 판정 (isFindShortcut)
     pool.js                랜덤 도전: 문서 모음에서 두 문서 뽑기 (pickPair, 분야 먼저 고르기), 분야 목록
   content/
     loader.js              콘텐츠 스크립트 → hud.js를 동적 import
     hud.js                 Shadow DOM HUD와 결과 화면. storage의 'game'을 보여주기만 한다
     selectors.js           나무위키 DOM 선택자는 이 파일에만 둔다
-  popup/                   팝업 (오늘의 문제, 랜덤, 직접 입력, 기록)
+  popup/                   팝업 (오늘의 문제, 랜덤, 기록, 맨 아래에 접힌 직접 입력)
   data/challenges.json     오늘의 문제 목록 (시작·목표 쌍)
   data/pool.json           랜덤 도전용 문서 모음 (쌍이 아니라 문서 하나씩)
 test/unit/                 node --test 단위 테스트 (npm test)
