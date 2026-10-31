@@ -1,4 +1,5 @@
-import { dailyChallenge, kstDate, poolFor, randomChallenge } from '../lib/daily.js';
+import { dailyChallenge, kstDate } from '../lib/daily.js';
+import { pickPair } from '../lib/pool.js';
 import { buildShareText, challengeKey, formatDuration, shareHeading } from '../lib/score.js';
 import { namespaceOf } from '../lib/rules.js';
 import { normalizeTitle, sameTitle } from '../lib/title.js';
@@ -17,10 +18,9 @@ function el(tag, props = {}, children = []) {
   return node;
 }
 
-async function loadChallenges() {
-  const res = await fetch(chrome.runtime.getURL('data/challenges.json'));
-  const data = await res.json();
-  return data.challenges;
+async function loadData(file) {
+  const res = await fetch(chrome.runtime.getURL(`data/${file}`));
+  return res.json();
 }
 
 async function startGame(setup, current) {
@@ -82,8 +82,9 @@ function renderList(list, records, opts) {
 }
 
 async function main() {
-  const [challenges, stored] = await Promise.all([
-    loadChallenges(),
+  const [{ challenges }, { docs }, stored] = await Promise.all([
+    loadData('challenges.json'),
+    loadData('pool.json'),
     chrome.storage.local.get(['game', 'records', 'best']),
   ]);
   const { game = null, records = [], best = {} } = stored;
@@ -121,16 +122,17 @@ async function main() {
     $('daily-start').disabled = true;
   }
 
-  // 랜덤 도전: 오늘까지 공개된 문제 중에서 고른다.
-  const pool = poolFor(challenges, today);
-  let pick = randomChallenge(pool, Math.random, daily?.challenge.id);
-  const showPick = () => ($('random-route').textContent = pick ? `${pick.start} → ${pick.target}` : '');
+  // 랜덤 도전: 문서 모음에서 시작 문서와 목표 문서를 따로 뽑는다.
+  let pick = pickPair(docs);
+  const showPick = () => ($('random-route').textContent = pick ? `${pick.start.title} → ${pick.target.title}` : '');
   showPick();
   $('random-reroll').addEventListener('click', () => {
-    pick = randomChallenge(pool, Math.random, pick?.id);
+    pick = pickPair(docs);
     showPick();
   });
-  $('random-start').addEventListener('click', () => pick && startGame(challengeSetup('random', pick), game));
+  $('random-start').addEventListener('click', () => {
+    if (pick) startGame({ mode: 'random', start: pick.start.title, target: pick.target.title }, game);
+  });
 
   // 직접 입력
   $('custom-form').addEventListener('submit', (e) => {

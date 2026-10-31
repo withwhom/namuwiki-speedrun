@@ -46,9 +46,3 @@ export function dailyChallenge(challenges, dateStr) {
   const challenge = pool[hash32(`namu-speedrun:${date}`) % pool.length];
   return { challenge, number: dailyNumber(date), date };
 }
-
-export function randomChallenge(challenges, rand = Math.random, excludeId = null) {
-  const pool = challenges.filter((c) => c.id !== excludeId);
-  if (!pool.length) return challenges[0] ?? null;
-  return pool[Math.floor(rand() * pool.length) % pool.length];
-}
