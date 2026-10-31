@@ -57,6 +57,21 @@ async function startCustomGame(start, target) {
   return { game, hud };
 }
 
+// 찾기 단축키를 누르고, 확장이 기본 동작(브라우저 찾기 창)을 막았는지 돌려준다
+async function pressFind(page) {
+  await page.evaluate(() => {
+    window.__findPrevented = null;
+    const listen = (e) => {
+      if (e.key.toLowerCase() !== 'f') return; // 먼저 오는 Ctrl/Meta 키는 건너뛴다
+      window.__findPrevented = e.defaultPrevented;
+      window.removeEventListener('keydown', listen, true);
+    };
+    window.addEventListener('keydown', listen, true);
+  });
+  await page.keyboard.press('ControlOrMeta+f');
+  return page.evaluate(() => window.__findPrevented);
+}
+
 async function waitForGame(predicate) {
   for (let i = 0; i < 50; i++) {
     const { game } = await storage('game');
@@ -70,6 +85,9 @@ test('시작 → 링크 3번(일반 로드, pushState, 리다이렉트) → 목�
   const { game: page, hud } = await startCustomGame('짜장면', '아이작 뉴턴');
 
   await assert.doesNotReject(hud.getByText('아이작 뉴턴').waitFor());
+  // 게임 중에는 찾기 단축키가 막힌다
+  assert.equal(await pressFind(page), true);
+  await hud.locator('.warn').filter({ hasText: '찾기' }).waitFor();
   // 게임 중에는 검색창이 숨겨진다 (selectors.js의 추정 선택자가 가짜 페이지에 맞는 경우)
   assert.equal(await page.locator('form.fake-search').isVisible(), false);
 
@@ -102,6 +120,7 @@ test('시작 → 링크 3번(일반 로드, pushState, 리다이렉트) → 목�
   await result.getByText('닫기').click();
   await page.locator('#namu-speedrun-hud').waitFor({ state: 'detached' });
   assert.equal(await page.locator('form.fake-search').isVisible(), true);
+  assert.equal(await pressFind(page), false);
 });
 
 test('이름공간 문서는 규칙 위반, 뒤로 가기도 1클릭, 포기하면 기록에 남는다', async () => {

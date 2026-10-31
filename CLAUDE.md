@@ -15,6 +15,7 @@ extension/                 크롬에 "압축해제된 확장 프로그램"으로
     navigation.js          게임 상태 전이 (시작, 이동, 리다이렉트 보정, 도착, 포기)
     score.js               기록, 최고 기록, 공유 문구, 시간 형식
     daily.js               오늘의 문제 선택 (KST 기준)
+    shortcuts.js           게임 중 막을 브라우저 찾기 단축키 판정 (isFindShortcut)
     pool.js                랜덤 도전: 문서 모음에서 두 문서 뽑기 (pickPair, 분야 먼저 고르기), 분야 목록
   content/
     loader.js              콘텐츠 스크립트 → hud.js를 동적 import
