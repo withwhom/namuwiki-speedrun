@@ -1,0 +1,14 @@
+{
+  "name": "namuwiki-speedrun",
+  "version": "0.1.0",
+  "private": true,
+  "description": "나무위키 스피드런 크롬 확장 (확장 자체는 extension/ 폴더, 빌드 없음)",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/unit/*.test.js",
+    "test:e2e": "node --test test/e2e/*.test.js"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  }
+}
