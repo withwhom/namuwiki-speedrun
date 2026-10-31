@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { DAILY_EPOCH, dailyChallenge, dailyNumber, kstDate, randomChallenge } from '../../extension/lib/daily.js';
+import { DAILY_EPOCH, dailyChallenge, dailyNumber, kstDate } from '../../extension/lib/daily.js';
 import { namespaceOf } from '../../extension/lib/rules.js';
 import { normalizeTitle, sameTitle } from '../../extension/lib/title.js';
 
@@ -59,11 +59,6 @@ test('에포크 이전 날짜는 #1로 맞춘다', () => {
 
 test('후보가 없으면 null', () => {
   assert.equal(dailyChallenge([], '2026-11-01'), null);
-});
-
-test('랜덤 도전은 제외한 id를 고르지 않는다', () => {
-  const two = challenges.slice(0, 2);
-  for (const r of [0, 0.5, 0.999]) assert.equal(randomChallenge(two, () => r, two[0].id).id, two[1].id);
 });
 
 test('challenges.json: 50개 이상, id 고유, 필수 항목', () => {

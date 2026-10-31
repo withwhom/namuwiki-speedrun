@@ -3,6 +3,7 @@
 
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { fakePageHtml } from './fake-namu.js';
@@ -120,6 +121,30 @@ test('이름공간 문서는 규칙 위반, 뒤로 가기도 1클릭, 포기하�
   assert.equal(records[0].status, 'abandoned');
   assert.equal(records[0].violated, true);
   assert.equal(records[0].clicks, 2);
+});
+
+test('랜덤 도전은 문서 모음에서 시작과 목표를 뽑는다', async () => {
+  const { docs } = JSON.parse(readFileSync(new URL('../../extension/data/pool.json', import.meta.url)));
+  const titles = new Set(docs.map((d) => d.title));
+  const popup = await context.newPage();
+  await popup.goto(`chrome-extension://${extensionId}/popup/popup.html`);
+
+  const route = popup.locator('#random-route');
+  await route.filter({ hasText: '→' }).waitFor();
+  await popup.click('#random-reroll');
+  const [start, target] = (await route.textContent()).split(' → ');
+  assert.ok(titles.has(start) && titles.has(target) && start !== target, `${start} → ${target}`);
+
+  const [page] = await Promise.all([context.waitForEvent('page'), popup.click('#random-start')]);
+  await page.waitForURL((u) => u.pathname.startsWith('/w/'));
+  const game = await waitForGame((g) => g?.status === 'running');
+  assert.equal(game.mode, 'random');
+  assert.equal(game.challengeId, null);
+  assert.equal(game.start, start);
+  assert.equal(game.target, target);
+
+  page.once('dialog', (d) => d.accept());
+  await page.locator('#namu-speedrun-hud').getByText('포기').click();
 });
 
 test('외부로 나간 요청이 없다', () => {

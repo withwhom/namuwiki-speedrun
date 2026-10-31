@@ -15,12 +15,14 @@ extension/                 크롬에 "압축해제된 확장 프로그램"으로
     navigation.js          게임 상태 전이 (시작, 이동, 리다이렉트 보정, 도착, 포기)
     score.js               기록, 최고 기록, 공유 문구, 시간 형식
     daily.js               오늘의 문제 선택 (KST 기준)
+    pool.js                랜덤 도전: 문서 모음에서 두 문서 뽑기 (pickPair), 분야 목록
   content/
     loader.js              콘텐츠 스크립트 → hud.js를 동적 import
     hud.js                 Shadow DOM HUD와 결과 화면. storage의 'game'을 보여주기만 한다
     selectors.js           나무위키 DOM 선택자는 이 파일에만 둔다
   popup/                   팝업 (오늘의 문제, 랜덤, 직접 입력, 기록)
-  data/challenges.json     문제 목록
+  data/challenges.json     오늘의 문제 목록 (시작·목표 쌍)
+  data/pool.json           랜덤 도전용 문서 모음 (쌍이 아니라 문서 하나씩)
 test/unit/                 node --test 단위 테스트 (npm test)
 test/e2e/                  Playwright + 가짜 나무위키 페이지 (npm run test:e2e)
 ```
@@ -52,3 +54,14 @@ test/e2e/                  Playwright + 가짜 나무위키 페이지 (npm run t
   - 없는 문서("해당 문서를 찾을 수 없습니다")는 쓰지 않는다. 나무위키는 없는 문서도 `/w/제목` 주소로 열리므로 확장이 걸러 주지 않는다.
   - 리다이렉트(주소에 `?from=`이 붙음)되는 이름은 목표로 쓸 때 실제 문서명을 `target`에 적는다. 실제 문서 링크를 바로 눌러 도착하면 `from`이 없기 때문이다.
   - 동음이의어 문서(분류:동음이의어)는 쓰지 않는다.
+
+## 문서 모음 추가 규칙 (`extension/data/pool.json`)
+
+랜덤 도전은 문서 모음에서 시작과 목표를 매번 따로 뽑는다. 쌍을 저장하지 않는다.
+
+- 형식: `{ "title": "문서명", "cat": "food" }`. `cat`은 `lib/pool.js`의 `POOL_CATEGORIES` 키 중 하나.
+  - 분야는 지금 쓰이지 않지만 나중에 "같은 분야끼리는 안 뽑기" 같은 사용자 설정에 쓴다 (`pickPair`의 `differentCategory`).
+- 서로 거리가 먼 문서를 고르게 넣는다. 너무 좁은 문서(작은 지명, 단역 인물)는 피한다.
+- id·since가 없으므로 순서를 바꾸거나 지워도 된다.
+- 제목 확인 규칙은 위와 같다: 없는 문서·동음이의어 문서는 빼고, 리다이렉트되는 이름은 실제 문서명으로 적는다.
+- `npm test`가 중복(띄어쓰기·대소문자 무시), 이름공간, 분야, 개수(1000개 이상)를 검사한다.
